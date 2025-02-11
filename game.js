@@ -20,10 +20,9 @@ let timeLeft = 30; // Game duration in seconds
 let fruits = [];
 let cursorPlayer1 = { x: canvas.width / 4, y: canvas.height / 2 }; // Player 1 cursor position
 let cursorPlayer2 = { x: (canvas.width / 4) * 3, y: canvas.height / 2 }; // Player 2 cursor position
-let speed = 5; // Speed of automatic movement
-let dx1 = 0, dy1 = 0; // Direction for Player 1
-let dx2 = 0, dy2 = 0; // Direction for Player 2
 let cursorRadius = 10; // Radius for both cursors
+let isTouchingPlayer1 = false;
+let isTouchingPlayer2 = false;
 
 // Function to resize canvas to fit the entire screen
 function resizeCanvas() {
@@ -66,14 +65,41 @@ canvas.addEventListener("touchstart", (event) => {
 
     // Player 1 (left side of screen)
     if (x < canvas.width / 2) {
+        isTouchingPlayer1 = true;
         cursorPlayer1.x = x;
         cursorPlayer1.y = y;
     }
     // Player 2 (right side of screen)
     else {
+        isTouchingPlayer2 = true;
         cursorPlayer2.x = x;
         cursorPlayer2.y = y;
     }
+});
+
+// Handle touch move to follow the touch position
+canvas.addEventListener("touchmove", (event) => {
+    const touch = event.touches[0];
+    const x = touch.clientX;
+    const y = touch.clientY;
+
+    // Move Player 1's cursor
+    if (isTouchingPlayer1) {
+        cursorPlayer1.x = x;
+        cursorPlayer1.y = y;
+    }
+
+    // Move Player 2's cursor
+    if (isTouchingPlayer2) {
+        cursorPlayer2.x = x;
+        cursorPlayer2.y = y;
+    }
+});
+
+// Handle touch end to stop movement for each player
+canvas.addEventListener("touchend", () => {
+    isTouchingPlayer1 = false;
+    isTouchingPlayer2 = false;
 });
 
 // Check collision with fruits for both players
@@ -104,7 +130,7 @@ function checkCollisions() {
 // Draw everything
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     // Draw Player 1's cursor (blue)
     ctx.fillStyle = "blue";
     ctx.beginPath();
@@ -116,7 +142,7 @@ function draw() {
     ctx.beginPath();
     ctx.arc(cursorPlayer2.x, cursorPlayer2.y, cursorRadius, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Draw fruits
     fruits.forEach(fruit => {
         ctx.fillStyle = fruit.color;
@@ -124,7 +150,7 @@ function draw() {
         ctx.arc(fruit.x, fruit.y, fruit.radius, 0, Math.PI * 2);
         ctx.fill();
     });
-    
+
     // Draw score
     ctx.fillStyle = "black";
     ctx.font = "20px Arial";
@@ -165,7 +191,7 @@ setInterval(() => {
 function startGame() {
     // Hide the start button
     startButton.style.display = "none";
-    
+
     // Reset game variables
     scorePlayer1 = 0;
     scorePlayer2 = 0;
