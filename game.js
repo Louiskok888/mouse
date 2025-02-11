@@ -172,6 +172,17 @@ function update() {
         ctx.fillText("Player 1 Score: " + scorePlayer1, canvas.width / 2 - 100, canvas.height / 2);
         ctx.fillText("Player 2 Score: " + scorePlayer2, canvas.width / 2 - 100, canvas.height / 2 + 30);
 
+        // Exit fullscreen after game over
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) { // Firefox
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { // Chrome, Safari, Opera
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { // Internet Explorer/Edge
+            document.msExitFullscreen();
+        }
+
         // Show start button below the score after game over
         startButton.style.display = "block";
         startButton.style.top = canvas.height / 2 + 50 + "px"; // Position the start button below the scores
