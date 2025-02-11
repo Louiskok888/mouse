@@ -201,6 +201,20 @@ function startGame() {
     cursorPlayer2 = { x: (canvas.width / 4) * 3, y: canvas.height / 2 };
     spawnFruits();
     update();
+
+    // Request fullscreen mode (if supported by the browser)
+    if (canvas.requestFullscreen) {
+        canvas.requestFullscreen();
+    } else if (canvas.mozRequestFullScreen) { // Firefox
+        canvas.mozRequestFullScreen();
+    } else if (canvas.webkitRequestFullscreen) { // Chrome, Safari and Opera
+        canvas.webkitRequestFullscreen();
+    } else if (canvas.msRequestFullscreen) { // Internet Explorer/Edge
+        canvas.msRequestFullscreen();
+    }
+
+    // Disable scrolling while in fullscreen
+    document.body.style.overflow = "hidden";
 }
 
 // Add event listener to the Start button
